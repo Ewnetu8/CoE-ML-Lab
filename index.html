@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI &amp; Robotics Lab – Interactive ML Simulations</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--card:#f1f3f6;--ac:#2563eb;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171c;--fg:#eee;--mut:#9aa3ad;--card:#23262e;--ac:#60a5fa;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15171c;--fg:#eee;--mut:#9aa3ad;--card:#23262e;--ac:#60a5fa;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:.2em 0}
+.sub{color:var(--mut);margin:0 0 12px}
+nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+nav button{white-space:nowrap}
+button{background:var(--card);color:var(--fg);border:1px solid var(--mut);border-radius:8px;padding:8px 12px;font:inherit;cursor:pointer}
+button.on,button.go{background:var(--ac);color:#fff;border-color:var(--ac)}
+section{display:none;gap:16px;flex-wrap:wrap;margin-top:12px}
+section.on{display:flex}
+.ctl{flex:1 1 240px;background:var(--card);border-radius:12px;padding:14px}
+.ctl label{display:block;margin-top:10px;font-size:.9rem}
+.ctl input[type=range],.ctl select{width:100%}
+.ctl .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.cv{flex:1 1 320px}
+canvas{width:100%;max-width:440px;aspect-ratio:1;background:var(--card);border-radius:12px;display:block}
+.out{font-weight:600;margin-top:10px}
+.note{color:var(--mut);font-size:.88rem;margin-top:10px}
+#login{max-width:380px;margin:12vh auto;padding:24px;background:var(--card);border-radius:14px;text-align:center}#login input{width:100%;box-sizing:border-box;margin:6px 0;padding:10px;border-radius:8px;border:1px solid var(--mut);background:var(--bg);color:var(--fg);font:inherit}#login button{width:100%;margin-top:8px}#lerr{color:#dc2626;min-height:1.4em;font-size:.9rem}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+details.nt{margin-top:12px;font-size:.9rem;border-top:1px solid var(--mut);padding-top:8px}details.nt summary{cursor:pointer;font-weight:600}details.nt ul{padding-left:18px;margin:6px 0}
+.wide{flex-direction:column}.card{background:var(--card);border-radius:12px;padding:14px;flex:1 1 220px}.cards{display:flex;gap:12px;flex-wrap:wrap}
+pre{background:var(--card);padding:10px;border-radius:8px;overflow-x:auto;font-size:.8rem;margin:6px 0}
+footer{color:var(--mut);font-size:.85rem;margin-top:24px;text-align:center}
+.hero{background:linear-gradient(135deg,#1e3a8a,#7c3aed 60%,#db2777);color:#fff;border-radius:16px;padding:22px;margin:8px 0 16px;box-shadow:0 6px 18px rgba(80,40,160,.35)}.hero h2{margin:0 0 4px;font-size:1.5rem}.hero .vm{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}.hero .vm div{flex:1 1 250px;background:rgba(255,255,255,.16);border-radius:12px;padding:12px 14px;font-size:.98rem}.hero .vm b{display:block;font-size:1.1rem;margin-bottom:4px}
+nav button{font-weight:600;font-size:.95rem}nav button.on{box-shadow:0 3px 8px rgba(37,99,235,.45)}
+canvas{max-width:520px;box-shadow:0 3px 12px rgba(0,0,0,.18)}
+.ctl{box-shadow:0 2px 8px rgba(0,0,0,.1)}.ctl label{font-size:1rem;font-weight:500}.ctl b:first-child{font-size:1.15rem}
+.out{font-size:1.05rem;background:var(--bg);padding:8px 10px;border-radius:8px;border-left:4px solid var(--ac)}
+details.nt{font-size:1.02rem;background:var(--bg);border:none;border-left:5px solid #7c3aed;border-radius:8px;padding:10px 14px}details.nt summary{font-size:1.1rem;color:#7c3aed}details.nt li{margin:6px 0}
+.leg{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:.95rem;font-weight:600}.leg i{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:5px}.leg i.sq{border-radius:2px}.cap{font-size:.95rem;margin-top:6px;color:var(--mut);max-width:520px}
+.card{box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s;border-top:4px solid #7c3aed}.card:hover{transform:translateY(-3px)}.card h3{margin:.2em 0}
+a.pl{color:var(--ac);font-weight:700;text-decoration:underline}.tag{display:inline-block;background:var(--ac);color:#fff;border-radius:99px;padding:2px 10px;font-size:.78rem;margin:2px 3px 0 0}.card ul{padding-left:18px;margin:6px 0}
+</style></head><body><div id="login"><h2>AI &amp; Robotics Center of Excellence</h2><p class="sub">Machine Learning Lab – please sign in</p><input id="lu" placeholder="Username" autocomplete="username"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><div id="lerr"></div><button class="go" id="lgo">Sign in</button><p class="note">Demo accounts – admin: Coe@Admin2026 · student: Coe@Learn2026 (usernames: admin, student)</p></div>
+<main id="app" style="display:none">
+<div class="top"><h1>AI &amp; Robotics Lab</h1><button id="lout">Sign out</button></div>
+<div class="hero"><h2>🤖 AI &amp; Robotics Center of Excellence</h2><div>Addis Ababa Science &amp; Technology University (AASTU) · interactive machine-learning lab</div><div class="vm"><div><b>🎯 Vision</b>To be a leading center in Africa for AI and robotics education, research and innovation that drives national development.</div><div><b>🚀 Mission</b>To train skilled graduates, carry out applied research, and build practical AI and robotics solutions through hands-on labs, industry partnerships and open learning resources.</div><div><b>💡 Core values</b>Excellence · Innovation · Integrity · Collaboration · Inclusion</div></div></div>
+<p class="sub">Change a setting, press a button, and watch the graph react. Read the notes beside each simulation.</p>
+<nav id="nav"></nav>
+
+<section id="t0"><div class="ctl">
+<b>Experimental vs theoretical probability</b>
+<label>Probability of heads: <span id="cpv">0.50</span><input id="cp" type="range" min="0.05" max="0.95" step="0.05" value="0.5"></label>
+<label>Tosses per click: <span id="cnv">10</span><input id="cn" type="range" min="1" max="500" value="10"></label>
+<div class="row"><button class="go" id="cgo">Toss</button><button id="crs">Reset</button></div>
+<div class="out" id="cout"></div>
+<div class="note">Law of Large Numbers: the experimental proportion (blue) approaches the true probability (green) as tosses increase. Basis of sampling, Monte Carlo and robot sensor averaging.</div>
+<details class="nt" open><summary>Notes: Probability</summary><ul><li><b>Theoretical</b> probability = favourable outcomes ÷ all outcomes (heads = 0.5).</li><li><b>Experimental</b> probability = observed frequency from trials.</li><li>More trials → smaller random error (about 1/√n).</li><li>Used in: Monte Carlo simulation, noise filtering, A/B testing, particle filters in robot localisation.</li></ul></details>
+</div><div class="cv"><canvas id="cc" width="400" height="400"></canvas><div class="leg"><span><i style="background:#2563eb"></i>Experimental proportion of heads</span><span><i style="background:#16a34a"></i>True probability</span></div><div class="cap">X-axis: number of tosses. Y-axis: proportion of heads (0 to 1). The blue line wiggles at first, then settles on the green line.</div></div></section>
+
+<section id="t1"><div class="ctl">
+<b>K-Means clustering (unsupervised)</b>
+<label>Number of clusters k: <span id="kkv">3</span><input id="kk" type="range" min="2" max="6" value="3"></label>
+<div class="row"><button class="go" id="kst">Step</button><button id="kru">Run to end</button><button id="kre">Random start</button><button id="kne">New data</button></div>
+<div class="out" id="kout"></div>
+<div class="note">Each step: (1) assign every point to its nearest centroid, (2) move each centroid to the mean of its points. Squares are centroids. Try a wrong k.</div>
+<details class="nt" open><summary>Notes: K-Means</summary><ul><li><b>Type:</b> unsupervised learning (no labels).</li><li><b>Goal:</b> split data into k groups by minimising within-cluster distance (inertia).</li><li><b>Steps:</b> choose k → place centroids → assign points → recompute means → repeat until stable.</li><li><b>Choosing k:</b> elbow method, silhouette score.</li><li><b>Pros:</b> fast, simple. <b>Cons:</b> needs k, sensitive to start and outliers, assumes round clusters.</li><li>Used in: customer segmentation, image colour compression, grouping LiDAR points.</li></ul></details>
+</div><div class="cv"><canvas id="kc" width="400" height="400"></canvas><div class="leg"><span><i style="background:#2563eb"></i>Data point (colour = its cluster)</span><span><i class="sq" style="background:#888"></i>Square = centroid (cluster centre)</span></div><div class="cap">Press Step and watch the squares move to the middle of their colour group. Lower inertia means tighter clusters.</div></div></section>
+
+<section id="t2"><div class="ctl">
+<b>Random Forest (supervised)</b>
+<label>Dataset<select id="rd"><option>xor</option><option>moons</option><option>circles</option></select></label>
+<label>Number of trees: <span id="rtv">15</span><input id="rt" type="range" min="1" max="60" value="15"></label>
+<label>Max depth: <span id="rdv">4</span><input id="rdp" type="range" min="1" max="10" value="4"></label>
+<div class="row"><button class="go" id="rgo">Train forest</button></div>
+<div class="out" id="rout"></div>
+<div class="note">Each tree learns on a bootstrap sample with random splits; the forest votes. Dots = training data, rings = test data. Try 1 tree, then 50: variance drops.</div>
+<details class="nt" open><summary>Notes: Random Forest</summary><ul><li><b>Type:</b> supervised ensemble (classification or regression).</li><li>Many decision trees, each trained on a bootstrap sample with random feature choices; predictions are combined by voting (bagging).</li><li><b>Key parameters:</b> n_estimators, max_depth, max_features, min_samples_leaf.</li><li><b>Pros:</b> accurate, resists overfitting, gives feature importance. <b>Cons:</b> less interpretable, larger models.</li><li>Used in: fault detection, sensor classification, medical and credit-risk prediction.</li><li>Watch the gap between train and test accuracy to spot overfitting.</li></ul></details>
+</div><div class="cv"><canvas id="rc" width="400" height="400"></canvas><div class="leg"><span><i style="background:#2563eb"></i>Class 0</span><span><i style="background:#dc2626"></i>Class 1</span><span>● = training data</span><span>◯ = test data</span></div><div class="cap">Background colour = what the forest predicts there. Stronger colour = more trees agree. Rings in the wrong colour are test errors.</div></div></section>
+
+<section id="t3"><div class="ctl">
+<b>Support Vector Machine (linear)</b>
+<label>Class spread: <span id="ssv">0.10</span><input id="ss" type="range" min="0.05" max="0.2" step="0.01" value="0.1"></label>
+<label>C (penalty for mistakes): <span id="scv">1</span><input id="sc" type="range" min="0.1" max="20" step="0.1" value="1"></label>
+<div class="row"><button class="go" id="sgo">Train</button><button id="sre">New data</button></div>
+<div class="out" id="sout"></div>
+<div class="note">The solid line is the decision boundary, dashed lines are the margin. Circled points are support vectors. Small C = wide margin, large C = fewer mistakes allowed.</div>
+<details class="nt" open><summary>Notes: SVM</summary><ul><li><b>Type:</b> supervised classifier.</li><li>Finds the hyperplane with the <b>maximum margin</b> between classes; only support vectors define it.</li><li><b>Loss:</b> hinge loss, max(0, 1 − y·f(x)). <b>C</b> trades margin width against training errors.</li><li><b>Kernels</b> (RBF, polynomial) let SVMs separate non-linear data; this demo is the linear case.</li><li><b>Pros:</b> strong on small, high-dimensional data. <b>Cons:</b> slow on very large data, needs feature scaling.</li><li>Used in: text classification, face and gesture recognition, bioinformatics.</li></ul></details>
+</div><div class="cv"><canvas id="sc2" width="400" height="400"></canvas><div class="leg"><span><i style="background:#2563eb"></i>Class 0</span><span><i style="background:#dc2626"></i>Class 1</span><span>— decision boundary</span><span>- - margin</span><span>◯ support vector</span></div><div class="cap">The line is placed to leave the widest empty street between the two classes. Only the circled points hold it in place.</div></div></section>
+
+<section id="t4"><div class="ctl">
+<b>Neural network (deep learning basics)</b>
+<label>Dataset<select id="nd"><option>xor</option><option>moons</option><option>circles</option></select></label>
+<label>Hidden neurons: <span id="nhv">8</span><input id="nh" type="range" min="1" max="16" value="8"></label>
+<label>Learning rate: <span id="nlv">0.05</span><input id="nl" type="range" min="0.005" max="0.2" step="0.005" value="0.05"></label>
+<div class="row"><button class="go" id="ngo">Train 100 epochs</button><button id="nre">Reset weights</button></div>
+<div class="out" id="nout"></div>
+<div class="note">A 2-input, 1-hidden-layer network (tanh) with sigmoid output, trained by backpropagation and SGD. With 1 neuron it cannot solve XOR; with 4+ it can.</div>
+<details class="nt" open><summary>Notes: Neural Networks / Deep Learning</summary><ul><li><b>Neuron:</b> output = activation(w·x + b). Layers of neurons learn features automatically.</li><li><b>Training:</b> forward pass → loss (cross-entropy) → backpropagation → gradient descent update.</li><li><b>Hyperparameters:</b> learning rate, hidden units, layers, epochs, batch size.</li><li><b>Deep learning</b> = many layers: CNNs for images, RNNs/Transformers for sequences.</li><li><b>Risks:</b> overfitting, needs lots of data; use validation sets, regularisation, early stopping.</li><li>Used in: vision for robots, speech, control policies, reinforcement learning.</li></ul></details>
+</div><div class="cv"><canvas id="nc" width="400" height="400"></canvas><div class="leg"><span><i style="background:#2563eb"></i>Class 0</span><span><i style="background:#dc2626"></i>Class 1</span></div><div class="cap">Background colour = the network output (blue near 0, red near 1). Train more epochs and the coloured regions bend around the data.</div></div></section>
+
+<section id="t5" class="wide"><h2>Libraries &amp; starter code (Python)</h2>
+<div class="cards"><div class="card"><b>Core data</b><br>NumPy, Pandas, Matplotlib, SciPy<pre>pip install numpy pandas matplotlib scipy</pre></div><div class="card"><b>Classical ML</b><br>scikit-learn, XGBoost<pre>pip install scikit-learn xgboost</pre></div><div class="card"><b>Deep learning</b><br>PyTorch, TensorFlow/Keras<pre>pip install torch tensorflow</pre></div><div class="card"><b>Vision &amp; robotics</b><br>OpenCV, ROS 2 (rclpy), Gymnasium<pre>pip install opencv-python gymnasium</pre></div></div>
+<div class="card"><b>K-Means</b><pre>from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+X,_ = make_blobs(300, centers=3, random_state=0)
+km = KMeans(n_clusters=3, n_init=10).fit(X)
+print(km.labels_[:10], km.inertia_)</pre></div>
+<div class="card"><b>Random Forest</b><pre>from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_moons
+from sklearn.model_selection import train_test_split
+X,y = make_moons(300, noise=0.2)
+Xtr,Xte,ytr,yte = train_test_split(X,y,test_size=0.3)
+rf = RandomForestClassifier(n_estimators=50, max_depth=4).fit(Xtr,ytr)
+print(rf.score(Xte,yte))</pre></div>
+<div class="card"><b>SVM</b><pre>from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+clf = make_pipeline(StandardScaler(), SVC(kernel='rbf', C=1))
+clf.fit(Xtr,ytr); print(clf.score(Xte,yte))</pre></div>
+<div class="card"><b>Neural network (PyTorch)</b><pre>import torch, torch.nn as nn
+net = nn.Sequential(nn.Linear(2,8), nn.Tanh(), nn.Linear(8,1), nn.Sigmoid())
+opt = torch.optim.SGD(net.parameters(), lr=0.05)
+X = torch.tensor(Xtr, dtype=torch.float32)
+Y = torch.tensor(ytr, dtype=torch.float32).view(-1,1)
+for epoch in range(200):
+    loss = nn.BCELoss()(net(X), Y)
+    opt.zero_grad(); loss.backward(); opt.step()</pre></div>
+<div class="card"><b>Deep learning (Keras CNN)</b><pre>from tensorflow import keras
+m = keras.Sequential([
+  keras.layers.Conv2D(16,3,activation='relu',input_shape=(28,28,1)),
+  keras.layers.MaxPooling2D(), keras.layers.Flatten(),
+  keras.layers.Dense(10, activation='softmax')])
+m.compile('adam','sparse_categorical_crossentropy',['accuracy'])</pre></div></section>
+<section id="t6" class="wide"><h2>Center Leadership &amp; Team</h2><div class="cards"><div class="card"><h3><a class="pl" href="https://scholar.google.com/citations?user=6hkJI1AAAAAJ&hl=en" target="_blank" rel="noopener">Dr. Habib Mohammed Hussien (PhD)</a></h3><b>Center Director</b><br>Assistant Professor, AASTU<br><span class="tag">Communication Engineering</span><span class="tag">Wireless &amp; TV white space</span><span class="tag">Signal processing</span><br><a class="pl" href="https://scholar.google.com/citations?user=6hkJI1AAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar profile ↗</a></div><div class="card"><h3><a class="pl" href="https://ewnet.netlify.app/" target="_blank" rel="noopener">Ewnetu Abebe Kassie, M.Sc.</a></h3><b>Chief Academic Research Assistant</b><br>AI &amp; Robotics CoE, AASTU<br><span class="tag">Machine Learning</span><span class="tag">Deep Learning</span><br><a class="pl" href="https://github.com/Ewnetu8" target="_blank" rel="noopener">GitHub ↗</a> · <a class="pl" href="https://www.linkedin.com/in/ewnetu-abebe-61b008106" target="_blank" rel="noopener">LinkedIn ↗</a></div><div class="card"><h3><a class="pl" href="https://new-portfolio-0tpm.onrender.com/" target="_blank" rel="noopener">Habtamu Girum</a></h3><b>Technical Assistant</b><br>Python developer: web scraping, APIs &amp; data<br><span class="tag">Python</span><span class="tag">FastAPI / Django</span><span class="tag">Data</span><br><a class="pl" href="https://new-portfolio-0tpm.onrender.com/contact" target="_blank" rel="noopener">Contact ↗</a> · <a class="pl" href="https://github.com/HabibiGirum" target="_blank" rel="noopener">GitHub ↗</a> · <a class="pl" href="https://linkedin.com/in/habtamu-girum-832082245" target="_blank" rel="noopener">LinkedIn ↗</a></div></div><details class="nt" open><summary>CV: Ewnetu Abebe Kassie, M.Sc. – Chief Academic Research Assistant I</summary>
+<p>AI &amp; Robotics Center of Excellence, Addis Ababa Science &amp; Technology University (AASTU), since Oct 2025. <a href="mailto:ewnetu.abex@gmail.com">ewnetu.abex@gmail.com</a> · <a href="https://github.com/Ewnetu8" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/ewnetu-abebe-61b008106" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://ewnet.netlify.app/" target="_blank" rel="noopener">Website</a></p>
+<b>Education</b><ul><li>2020–2023: M.Sc. Computational Data Science, Addis Ababa University (CGPA 3.82/4.00). Thesis: Earthquake magnitude prediction using deep learning for the Horn of Africa.</li><li>2010–2013: B.Sc. Mathematics, Arba Minch University (major CGPA 3.83/4.00). Thesis: Game Theory.</li></ul>
+<b>Employment</b><ul><li>Oct 2025–present: Chief Academic Research Assistant I, AI &amp; Robotics CoE, AASTU</li><li>Sep 2025–Mar 2026: Statistician (contract), Ethiopian Statistical Service</li><li>Oct 2023–present: Part-time Lecturer, Computer Science, New Generation University College</li><li>Mar 2023–Oct 2025: Chief Technical Assistant I, Mathematics, Kotebe University of Education</li><li>Nov 2017–Mar 2023: Senior Technical Assistant, Mathematics, Kotebe University of Education</li><li>Sep 2016–Nov 2017: Mathematics Teacher, Germany Church School</li></ul>
+<b>Publication</b><ul><li>E. Abebe, H. Kebede, M. Kevin, Z. Demissie, “Earthquakes magnitude prediction using deep learning for the Horn of Africa,” <i>Soil Dynamics and Earthquake Engineering</i>, vol. 170, 107913, 2023.</li></ul>
+<b>Skills</b><ul><li>Languages: Amharic (native), English (professional, C2)</li><li>Programming: Python, R, MATLAB, FORTRAN; SQL, MongoDB; HTML, CSS, JavaScript, Apache Spark; LaTeX</li><li>Expertise: Machine Learning, Deep Learning, Big Data, TinyML, Mathematical Modeling, Numerical Analysis, Optimization</li></ul>
+<b>Research interests</b><ul><li>Data Science, AI and Computational Science</li><li>Machine Learning and Deep Learning algorithms</li><li>Statistical and computational methods for complex data</li></ul>
+<b>Academic events</b><ul><li>2024: Master Class for Teaching Online (Open edX), Arizona State University; Data Analysis Fundamentals, Udacity; TinyML workshop, ICTP Trieste</li><li>2023: Presenter, Data Science Africa workshop, University of Rwanda; Presenter, 2nd Annual Congress of CSESE, Addis Ababa University</li><li>2021: CODATA RDA Data Science Summer School (R), ICTP Trieste</li></ul>
+<b>Community service</b><ul><li>2024: Python data-science training for IT teachers, Kotebe University of Education</li><li>2023: LaTeX training for mathematics students, Bahir Dar University</li><li>2010–2013: Tutoring at Arba Minch University</li></ul></details>
+<p class="note">AI &amp; Robotics Center of Excellence.</p></section>
+<section id="t7" class="wide"><h2>🎓 Courses offered</h2><div class="cards">
+<div class="card"><h3>Introduction to AI</h3><span class="tag">Beginner</span><ul><li>Intelligent agents, search, knowledge</li><li>AI applications and ethics</li></ul></div>
+<div class="card"><h3>Python for Data Science</h3><span class="tag">Beginner</span><ul><li>NumPy, Pandas, Matplotlib</li><li>Data cleaning and exploration</li></ul></div>
+<div class="card"><h3>Mathematics for ML</h3><span class="tag">Beginner</span><ul><li>Linear algebra, calculus</li><li>Probability, statistics, optimisation</li></ul></div>
+<div class="card"><h3>Machine Learning</h3><span class="tag">Intermediate</span><ul><li>Regression, classification, trees, SVM</li><li>Clustering, evaluation, scikit-learn</li></ul></div>
+<div class="card"><h3>Deep Learning</h3><span class="tag">Intermediate</span><ul><li>MLP, CNN, RNN/LSTM, Transformers</li><li>PyTorch and Keras</li></ul></div>
+<div class="card"><h3>Computer Vision</h3><span class="tag">Intermediate</span><ul><li>OpenCV, image filters, features</li><li>Detection and segmentation (YOLO)</li></ul></div>
+<div class="card"><h3>Natural Language Processing</h3><span class="tag">Intermediate</span><ul><li>Tokenisation, embeddings, Transformers</li><li>Amharic and low-resource languages</li></ul></div>
+<div class="card"><h3>Robotics &amp; ROS 2</h3><span class="tag">Intermediate</span><ul><li>Kinematics, sensors, PID control</li><li>ROS 2 nodes, topics, Gazebo simulation</li></ul></div>
+<div class="card"><h3>Reinforcement Learning</h3><span class="tag">Advanced</span><ul><li>MDPs, Q-learning, policy gradients</li><li>Gymnasium environments</li></ul></div>
+<div class="card"><h3>TinyML &amp; Embedded AI</h3><span class="tag">Advanced</span><ul><li>Microcontrollers, quantisation</li><li>TensorFlow Lite deployment</li></ul></div>
+<div class="card"><h3>Big Data &amp; Apache Spark</h3><span class="tag">Advanced</span><ul><li>Spark, SQL, MongoDB</li><li>Scalable data pipelines</li></ul></div>
+<div class="card"><h3>Capstone Project</h3><span class="tag">Advanced</span><ul><li>Build and present an AI or robotics system</li><li>Teamwork, documentation, demo</li></ul></div>
+</div></section>
+<section id="t8" class="wide"><h2>📝 Study notes (cheat sheet)</h2><div class="cards">
+<div class="card"><h3>Types of ML</h3><ul><li><b>Supervised:</b> learn from labelled data (SVM, Random Forest).</li><li><b>Unsupervised:</b> find structure without labels (K-Means, PCA).</li><li><b>Reinforcement:</b> learn by reward and penalty.</li></ul></div>
+<div class="card"><h3>Evaluation metrics</h3><pre>Accuracy  = (TP+TN) / all
+Precision = TP / (TP+FP)
+Recall    = TP / (TP+FN)
+F1 = 2PR / (P+R)
+RMSE = sqrt(mean((y-ŷ)²))</pre></div>
+<div class="card"><h3>Overfitting vs underfitting</h3><ul><li><b>Underfit:</b> too simple, high error everywhere (high bias).</li><li><b>Overfit:</b> memorises training data, poor test score (high variance).</li><li><b>Fix:</b> more data, regularisation, simpler model, cross-validation.</li></ul></div>
+<div class="card"><h3>Gradient descent</h3><pre>w ← w − η · ∂L/∂w</pre><ul><li>η = learning rate: too big diverges, too small is slow.</li><li>SGD uses one sample or a mini-batch per step.</li></ul></div>
+<div class="card"><h3>Regression</h3><pre>Linear:   ŷ = w·x + b
+Logistic: p = 1 / (1 + e^-(w·x+b))</pre><ul><li>Linear predicts numbers; logistic predicts class probability.</li></ul></div>
+<div class="card"><h3>K-Nearest Neighbours</h3><ul><li>Classify a point by the majority of its k closest points.</li><li>Scale features first. Small k = noisy, large k = smooth.</li></ul></div>
+<div class="card"><h3>PCA</h3><ul><li>Rotates data onto directions of largest variance.</li><li>Keep the top components to reduce dimensions and speed training.</li></ul></div>
+<div class="card"><h3>Activation functions</h3><pre>sigmoid: 1/(1+e^-z)  (0 to 1)
+tanh:    (-1 to 1)
+ReLU:    max(0, z)
+softmax: class probabilities</pre></div>
+<div class="card"><h3>Robotics basics</h3><ul><li><b>Sensors:</b> camera, LiDAR, IMU, encoders.</li><li><b>Actuators:</b> motors, servos.</li><li><b>PID:</b> u = Kp·e + Ki·∫e + Kd·de/dt</li><li><b>SLAM:</b> build a map and locate the robot at once.</li></ul></div>
+<div class="card"><h3>ML workflow</h3><ul><li>1. Define the problem and collect data</li><li>2. Clean and explore</li><li>3. Split train / validation / test</li><li>4. Train and tune</li><li>5. Evaluate, deploy, monitor</li></ul></div>
+</div></section>
+<footer>AI &amp; Robotics Center of Excellence · Director: <a class="pl" href="https://scholar.google.com/citations?user=6hkJI1AAAAAJ&hl=en" target="_blank" rel="noopener">Dr. Habib Mohammed Hussien (PhD)</a> · Chief Academic Research Assistant: <a class="pl" href="https://ewnet.netlify.app/" target="_blank" rel="noopener">Ewnetu Abebe</a> · Technical Assistant: <a class="pl" href="https://new-portfolio-0tpm.onrender.com/" target="_blank" rel="noopener">Habtamu Girum</a></footer>
+<script>
+const $=s=>document.querySelector(s),R=Math.random,PAL=['#2563eb','#16a34a','#dc2626','#d97706','#9333ea','#0891b2'];
+const gauss=()=>Math.sqrt(-2*Math.log(R()||1e-9))*Math.cos(6.283*R());
+const fg=()=>getComputedStyle(document.body).color;
+function cv(id){const c=$(id);return[c.getContext('2d'),c.width,c.height]}
+function blobs(k,n,s,cs){const P=[];for(let c=0;c<k;c++){const a=cs?cs[c][0]:.15+.7*R(),b=cs?cs[c][1]:.15+.7*R();for(let i=0;i<n;i++)P.push({x:a+gauss()*s,y:b+gauss()*s,c})}return P}
+function ds(name,n){const P=[];for(let i=0;i<n;i++){const c=i%2,t=Math.PI*R();let x,y;
+ if(name=='xor'){const q=R()<.5;x=(q?c:1-c)?.75:.25;y=(q?1-c:c)?.75:.25;x=c?(q?.25:.75):(q?.25:.75);y=c?(q?.75:.25):(q?.25:.75);x+=gauss()*.08;y+=gauss()*.08}
+ else if(name=='moons'){x=c?1-Math.cos(t):Math.cos(t);y=c?.5-Math.sin(t):Math.sin(t);x=(x+1.3)/3.6+gauss()*.03;y=(y+.7)/1.8+gauss()*.03}
+ else{const r=c?.22:.4,a=6.283*R();x=.5+r*Math.cos(a)+gauss()*.03;y=.5+r*Math.sin(a)+gauss()*.03}
+ P.push({x,y,c})}return P}
+function dots(g,W,H,P,f,r=4,ring){P.forEach(p=>{g.beginPath();g.arc(p.x*W,(1-p.y)*H,r,0,7);if(ring){g.strokeStyle=f(p);g.lineWidth=2;g.stroke()}else{g.fillStyle=f(p);g.fill()}})}
+function map(g,W,H,fn,N=40){const w=W/N,h=H/N;for(let i=0;i<N;i++)for(let j=0;j<N;j++){const v=fn((i+.5)/N,1-(j+.5)/N);g.globalAlpha=.12+.4*Math.abs(v-.5)*2;g.fillStyle=v>.5?PAL[2]:PAL[0];g.fillRect(i*w,j*h,w+1,h+1)}g.globalAlpha=1}
+const cc2=c=>c?PAL[2]:PAL[0];
+const tabs=['🎲 Probability','🔵 K-Means','🌲 Random Forest','📐 SVM','🧠 Neural Net','📚 Libraries & Code','👥 Team','🎓 Courses','📝 Study Notes'],init=[],inited=[];
+tabs.forEach((t,i)=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>show(i);$('#nav').appendChild(b)});
+function show(i){document.querySelectorAll('#nav button').forEach((b,j)=>b.classList.toggle('on',i==j));document.querySelectorAll('section').forEach((s,j)=>s.classList.toggle('on',i==j));if(!inited[i]){inited[i]=1;init[i]()}}
+document.querySelectorAll('input[type=range]').forEach(r=>r.oninput=()=>{const s=$('#'+r.id+'v');if(s)s.textContent=r.value});
+
+/* 1. Coin toss */
+let T=[],H=0;
+function coin(n){const p=+$('#cp').value;for(let i=0;i<n;i++){const h=R()<p;T.push(h);if(h)H++}dCoin()}
+function dCoin(){const[g,W,Hh]=cv('#cc'),p=+$('#cp').value,n=T.length,m=Math.max(n,50),c=fg();g.clearRect(0,0,W,Hh);
+ g.strokeStyle=c;g.globalAlpha=.4;g.strokeRect(30,10,W-40,Hh-40);g.globalAlpha=1;g.fillStyle=c;g.font='bold 12px sans-serif';
+ [0,.25,.5,.75,1].forEach(v=>{const yy=Hh-30-v*(Hh-40);g.fillText(v,2,yy+4);g.globalAlpha=.15;g.beginPath();g.moveTo(30,yy);g.lineTo(W-10,yy);g.stroke();g.globalAlpha=1});g.font='bold 14px sans-serif';g.fillText('Number of tosses (0 to '+m+')',W/2-90,Hh-8);
+ const Y=v=>Hh-30-v*(Hh-40);g.strokeStyle=PAL[1];g.lineWidth=2;g.beginPath();g.moveTo(30,Y(p));g.lineTo(W-10,Y(p));g.stroke();
+ g.strokeStyle=PAL[0];g.beginPath();let h=0;T.forEach((t,i)=>{if(t)h++;const x=30+(W-40)*(i+1)/m,y=Y(h/(i+1));i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();
+ $('#cout').textContent=n?`Heads = ${H}/${n} = ${(H/n).toFixed(3)}   |   Tails = ${n-H}/${n} = ${((n-H)/n).toFixed(3)}`:'Press Toss'}
+init[0]=()=>{$('#cgo').onclick=()=>coin(+$('#cn').value);$('#crs').onclick=()=>{T=[];H=0;dCoin()};$('#cp').addEventListener('input',dCoin);$('#cn').oninput=e=>$('#cnv').textContent=e.target.value;dCoin()};
+
+/* 2. K-Means */
+let KP,KC,KI=0;
+function kAs(){KP.forEach(p=>{let b=0,d=9;KC.forEach((c,i)=>{const e=(p.x-c.x)**2+(p.y-c.y)**2;if(e<d){d=e;b=i}});p.a=b})}
+function kRe(){const k=+$('#kk').value;KC=Array.from({length:k},()=>{const p=KP[R()*KP.length|0];return{x:p.x,y:p.y}});KI=0;kAs();kDr()}
+function kNe(){KP=blobs(3,50,.06);kRe()}
+function kSt(){const o=KP.map(p=>p.a);KC.forEach((c,i)=>{const m=KP.filter(p=>p.a==i);if(m.length){c.x=m.reduce((s,p)=>s+p.x,0)/m.length;c.y=m.reduce((s,p)=>s+p.y,0)/m.length}});kAs();KI++;kDr();return KP.some((p,i)=>p.a!=o[i])}
+function kDr(){const[g,W,H]=cv('#kc');g.clearRect(0,0,W,H);dots(g,W,H,KP,p=>PAL[p.a]);KC.forEach((c,i)=>{g.fillStyle=PAL[i];g.strokeStyle=fg();g.lineWidth=2;g.fillRect(c.x*W-7,(1-c.y)*H-7,14,14);g.strokeRect(c.x*W-7,(1-c.y)*H-7,14,14)});
+ const J=KP.reduce((s,p)=>s+(p.x-KC[p.a].x)**2+(p.y-KC[p.a].y)**2,0);$('#kout').textContent=`Iteration ${KI}   |   Inertia (sum of squared distances) = ${J.toFixed(3)}`}
+init[1]=()=>{$('#kst').onclick=kSt;$('#kru').onclick=()=>{let i=0;while(i++<50&&kSt());};$('#kre').onclick=kRe;$('#kne').onclick=kNe;$('#kk').onchange=kRe;kNe()};
+
+/* 3. Random Forest */
+const gini=a=>{const n=a.length;if(!n)return 0;const p=a.filter(q=>q.c).length/n;return 2*p*(1-p)};
+function build(D,d,md){const n1=D.filter(p=>p.c).length;if(d>=md||!n1||n1==D.length||D.length<4)return{l:n1*2>=D.length?1:0};
+ let best=null,bs=9;const f=R()<.5?'x':'y';for(let k=0;k<15;k++){const t=D[R()*D.length|0][f],L=D.filter(p=>p[f]<=t),Rr=D.filter(p=>p[f]>t);if(!L.length||!Rr.length)continue;const s=(L.length*gini(L)+Rr.length*gini(Rr))/D.length;if(s<bs){bs=s;best={f,t,L,R:Rr}}}
+ if(!best)return{l:n1*2>=D.length?1:0};return{f:best.f,t:best.t,a:build(best.L,d+1,md),b:build(best.R,d+1,md)}}
+const pred=(n,x,y)=>n.l!==undefined?n.l:((n.f=='x'?x:y)<=n.t?pred(n.a,x,y):pred(n.b,x,y));
+let F=[],RTr=[],RTe=[];
+function rTrain(){const D=ds($('#rd').value,200);RTr=D.slice(0,140);RTe=D.slice(140);F=[];const nt=+$('#rt').value,md=+$('#rdp').value;
+ for(let t=0;t<nt;t++){const B=Array.from({length:RTr.length},()=>RTr[R()*RTr.length|0]);F.push(build(B,0,md))}rDr()}
+const vote=(x,y)=>F.reduce((s,t)=>s+pred(t,x,y),0)/F.length;
+function rDr(){const[g,W,H]=cv('#rc');g.clearRect(0,0,W,H);map(g,W,H,vote);dots(g,W,H,RTr,p=>cc2(p.c));dots(g,W,H,RTe,p=>cc2(p.c),5,1);
+ const acc=a=>(a.filter(p=>(vote(p.x,p.y)>.5?1:0)==p.c).length/a.length*100).toFixed(1);$('#rout').textContent=`Trees: ${F.length}   |   Train accuracy ${acc(RTr)}%   |   Test accuracy ${acc(RTe)}%`}
+init[2]=()=>{$('#rgo').onclick=rTrain;$('#rd').onchange=rTrain;rTrain()};
+
+/* 4. SVM */
+let SP,sw,sb;
+const sx=p=>[(p.x-.5)*4,(p.y-.5)*4];
+function sNew(){SP=blobs(2,40,+$('#ss').value,[[.32,.35],[.68,.65]]);sw=[0,0];sb=0;sDr()}
+function sTr(){const C=+$('#sc').value,lr=.01,n=SP.length;for(let e=0;e<300;e++)SP.forEach(p=>{const[u,v]=sx(p),y=p.c?1:-1;sw[0]-=lr*sw[0]/n;sw[1]-=lr*sw[1]/n;if(y*(sw[0]*u+sw[1]*v+sb)<1){sw[0]+=lr*C*y*u;sw[1]+=lr*C*y*v;sb+=lr*C*y}});sDr()}
+function sDr(){const[g,W,H]=cv('#sc2');g.clearRect(0,0,W,H);const sv=[];
+ SP.forEach(p=>{const[u,v]=sx(p),y=p.c?1:-1;if(Math.abs(y*(sw[0]*u+sw[1]*v+sb))<=1.05&&(sw[0]||sw[1]))sv.push(p)});
+ dots(g,W,H,SP,p=>cc2(p.c));dots(g,W,H,sv,()=>fg(),9,1);
+ if(Math.abs(sw[1])>1e-6){[[0,'solid'],[1,'d'],[-1,'d']].forEach(([c,s])=>{g.setLineDash(s=='d'?[6,5]:[]);g.strokeStyle=fg();g.lineWidth=2;g.beginPath();[-2,2].forEach((u,i)=>{const v=(c-sb-sw[0]*u)/sw[1],x=u/4+.5,y=v/4+.5;i?g.lineTo(x*W,(1-y)*H):g.moveTo(x*W,(1-y)*H)});g.stroke()});g.setLineDash([])}
+ const nw=Math.hypot(sw[0],sw[1]),err=SP.filter(p=>(sw[0]*sx(p)[0]+sw[1]*sx(p)[1]+sb>0?1:0)!=p.c).length;
+ $('#sout').textContent=nw?`Margin width = ${(2/nw).toFixed(2)}   |   Support vectors = ${sv.length}   |   Errors = ${err}/${SP.length}`:'Press Train'}
+init[3]=()=>{$('#sgo').onclick=sTr;$('#sre').onclick=sNew;$('#ss').onchange=sNew;sNew()};
+
+/* 5. Neural network */
+let W1,b1,W2,b2,NP,NE=0,NL=0;
+const fwd=(u,v)=>{const h=W1.map((w,i)=>Math.tanh(w[0]*u+w[1]*v+b1[i])),z=h.reduce((s,a,i)=>s+a*W2[i],b2);return[h,1/(1+Math.exp(-z))]};
+function nRe(){const k=+$('#nh').value;NP=ds($('#nd').value,120);W1=Array.from({length:k},()=>[gauss()*.8,gauss()*.8]);b1=Array(k).fill(0);W2=Array.from({length:k},()=>gauss()*.5);b2=0;NE=0;NL=0;nDr()}
+function nTr(ep){const lr=+$('#nl').value;for(let e=0;e<ep;e++){NL=0;NP.slice().sort(()=>R()-.5).forEach(p=>{const u=(p.x-.5)*3,v=(p.y-.5)*3,[h,o]=fwd(u,v),d=o-p.c;NL-=Math.log(Math.max(1e-9,p.c?o:1-o));
+ for(let i=0;i<h.length;i++){const dh=d*W2[i]*(1-h[i]*h[i]);W2[i]-=lr*d*h[i];W1[i][0]-=lr*dh*u;W1[i][1]-=lr*dh*v;b1[i]-=lr*dh}b2-=lr*d});NE++}nDr()}
+function nDr(){const[g,W,Hh]=cv('#nc');g.clearRect(0,0,W,Hh);map(g,W,Hh,(x,y)=>fwd((x-.5)*3,(y-.5)*3)[1]);dots(g,W,Hh,NP,p=>cc2(p.c));
+ const acc=NP.filter(p=>(fwd((p.x-.5)*3,(p.y-.5)*3)[1]>.5?1:0)==p.c).length/NP.length*100;$('#nout').textContent=`Epoch ${NE}   |   Loss ${(NL/NP.length).toFixed(3)}   |   Accuracy ${acc.toFixed(1)}%`}
+init[4]=()=>{$('#ngo').onclick=()=>nTr(100);$('#nre').onclick=nRe;$('#nd').onchange=nRe;$('#nh').onchange=nRe;nRe()};
+init[5]=init[6]=init[7]=init[8]=()=>{};document.querySelectorAll('canvas').forEach(c=>{c.width=c.height=520});
+const U={admin:'ee3543874db11b3bd9df484bb2753dfed34df312c9ca8d17264297f697ac45dc',student:'0cac6bd6e26e4c34299e61785faffefd41dcc729e82085be96e0fd9b00b780f6'};
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function login(){const u=$('#lu').value.trim().toLowerCase(),h=await sha('coe|'+u+'|'+$('#lp').value);
+ if(U[u]&&U[u]===h){$('#login').style.display='none';$('#app').style.display='block';show(0)}else{$('#lerr').textContent='Wrong username or password';$('#lp').value=''}}
+$('#lgo').onclick=login;$('#lp').onkeydown=e=>{if(e.key=='Enter')login()};$('#lout').onclick=()=>location.reload();
+</script></main></body></html>
