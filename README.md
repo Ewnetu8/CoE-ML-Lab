@@ -1,10 +1,9 @@
 # AASTU AI & Robotics Center of Excellence - ML Lab
 
 - index.html - the interactive lab (open in a browser or deploy)
-- materials/Deep_Learning_Lab_Manual_ARIN6022.pdf - full lab manual (linked from the Lab Manuals tab)
+- materials/ - Deep_Learning_Lab_Manual_ARIN6022.pdf, Machine_Learning_Lab_Manual_ARIN6012.pdf, Project_Presentation_Guide.docx (linked from the Lab Manuals and Links tabs)
 - python/ml_examples.py - Python versions of the simulations
 
-Logins (change them!): admin / Coe@Admin2026 and student / Coe@Learn2026.
 Passwords are SHA-256 hashes of "coe|username|password" in the `U={...}` line of index.html.
 The login only hides the page; it is NOT real security.
 
