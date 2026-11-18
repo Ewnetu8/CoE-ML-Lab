@@ -1,0 +1,1 @@
+{ "name": "aastu-coe-lab", "version": "1.0.0", "private": true, "description": "AASTU AI & Robotics CoE ML lab with server-side login", "main": "server.js", "scripts": { "start": "node server.js" }, "engines": { "node": ">=18" } }

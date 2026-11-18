@@ -1,12 +1,31 @@
-# AASTU AI & Robotics Center of Excellence - ML Lab
+# Server-side login version (recommended for real protection)
 
-- index.html - the interactive lab (open in a browser or deploy)
-- materials/ - Deep_Learning_Lab_Manual_ARIN6022.pdf, Machine_Learning_Lab_Manual_ARIN6012.pdf, Project_Presentation_Guide.docx (linked from the Lab Manuals and Links tabs)
-- python/ml_examples.py - Python versions of the simulations
+The site in `protected/index.html` is sent to the browser ONLY after the server has checked the
+username and password. The password is not in any file: the server keeps only a scrypt hash in
+an environment variable, and signs session cookies with a secret (also an environment variable).
 
-Passwords are SHA-256 hashes of "coe|username|password" in the `U={...}` line of index.html.
-The login only hides the page; it is NOT real security.
+## What it does
+- scrypt password hashing, constant-time comparison
+- HttpOnly + SameSite cookie (Secure over HTTPS), 8-hour signed session
+- 5 failed logins per 15 minutes per IP, then HTTP 429
+- Origin check on login/logout, security headers, no-store caching of the protected page
+- No npm packages needed (Node 18 or newer)
 
-Deploy on GitHub Pages: upload index.html + the materials and python folders to a PUBLIC repo
-(files at the top level, not inside a subfolder), then Settings -> Pages -> Deploy from branch -> main -> / (root).
-Deploy on Netlify: drag the coe-ml-lab folder onto app.netlify.com/drop.
+## 1. Make the two secret values (run on any computer with Node)
+    node hash-password.js "the password"                -> value for AUTH_PASS_HASH
+    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"   -> value for SESSION_SECRET
+
+## 2. Test on your computer
+    AUTH_USER=AIRCoE AUTH_PASS_HASH='<hash>' SESSION_SECRET='<secret>' node server.js
+    Open http://localhost:3000   (Windows PowerShell: set the three variables with $env:NAME='value' first)
+
+## 3. Deploy on Render (free tier works)
+1. Put this `server-version` folder in a GitHub repository (do NOT add a .env file).
+2. render.com -> New -> Web Service -> pick the repository.
+3. Runtime: Node. Build command: (leave empty). Start command: `node server.js`.
+4. Environment -> add AUTH_USER, AUTH_PASS_HASH, SESSION_SECRET.
+5. Deploy. Open the https://....onrender.com address and sign in.
+GitHub Pages and Netlify static hosting cannot run this server; use Render, Railway, Fly.io or any Node host.
+
+## Change the password later
+Run hash-password.js with the new password, replace AUTH_PASS_HASH on the host, redeploy.
